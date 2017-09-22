@@ -151,8 +151,8 @@ public class NuevoCliente extends JFrame implements ChangeListener{
 		btnCancelar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				NuevoCliente.this.setVisible(false);
-				Clientev2 clientev2 = new Clientev2();
-				clientev2.setVisible(true);
+				Cliente Cliente = new Cliente();
+				Cliente.setVisible(true);
 				NuevoCliente.this.setVisible(false);				
 			}
 		});

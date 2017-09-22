@@ -13,4 +13,5 @@ public final class Mensaje {
 	public static final String INVALID_CEDULA = "La Cédula ingresada no es válido.";
 	public static final String INVALID_SEX = "El Sexo ingresado no es válido.";
 	public static final String INVALID_ID = "El Id no es válido.";
+	public static final String NOT_FOUND = "No se encotró resultados.";
 }
