@@ -61,141 +61,6 @@ public class EditarCliente extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		txtNombres = new JTextField();
-		txtNombres.setBounds(176, 30, 120, 20);
-		contentPane.add(txtNombres);
-		txtNombres.setColumns(10);
-		
-		txtApellidos = new JTextField();
-		txtApellidos.setBounds(176, 61, 120, 20);
-		contentPane.add(txtApellidos);
-		txtApellidos.setColumns(10);
-		
-		txtCedula = new JTextField();
-		txtCedula.setBounds(176, 92, 86, 20);
-		contentPane.add(txtCedula);
-		txtCedula.setColumns(10);
-		
-		rbMasculino = new JRadioButton("Masculino");
-		rbMasculino.setBounds(173, 119, 109, 23);
-		contentPane.add(rbMasculino);
-		
-		rbFemenino = new JRadioButton("Femenino");
-		rbFemenino.setBounds(284, 119, 109, 23);
-		contentPane.add(rbFemenino);
-		
-		txtTelefono = new JTextField();
-		txtTelefono.setBounds(176, 149, 86, 20);
-		contentPane.add(txtTelefono);
-		txtTelefono.setColumns(10);
-		
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(176, 190, 209, 89);
-		contentPane.add(scrollPane);
-		
-		txtDireccion = new JTextArea();
-		scrollPane.setViewportView(txtDireccion);
-		
-
-		// Guardar los cambios		
-		JButton btnGuardar = new JButton("Guardar");
-		btnGuardar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				
-				Map<String, String> cliente = new HashMap<String, String>();
-				int client_exists = 0;
-
-				/* Se agregan campos que seran validados (obligatorios) los otros (opcionales)
-				 * se los agrega mas abajo, para saltar su validacion en 
-				 * "Validar.ClienteActualizar()", es decir los opcionales
-				 * no estan siendo validados, en esta version.
-				 * */
-				
-				// Campos Obligatorios, que seran validados
-				cliente.put("clienteId", String.valueOf(clienteId));
-				cliente.put("nombre", txtNombres.getText());
-				cliente.put("apellido", txtApellidos.getText());				
-				cliente.put("cedula", txtCedula.getText());
-				cliente.put("sexo", "");
-
-				if(rbMasculino.isSelected()) {
-					cliente.put("sexo", "Masculino");
-				} 
-				if(rbFemenino.isSelected()) {
-					cliente.put("sexo", "Femenino");
-				}				
-				
-				// Validar Datos del Cliente
-				if(!Validar.ClienteActualizar(cliente)) {
-					System.out.println("Los datos ingresados son invalidos");
-					return;
-				}	
-				
-				// Verificar si el Cliente Id existe en la base de datos
-				if(!ClienteExiste(Integer.parseInt(cliente.get("clienteId")))){
-					return;
-				}				
-				
-				//Campos Opcionales, que no seran validados
-				cliente.put("telefono", txtTelefono.getText());
-				cliente.put("direccion", txtDireccion.getText());
-				
-				
-				// Actualizacion de los datos del Cliente
-				try {
-					Connection conection = ConexionBD.Conectar();
-					String sql =
-							"UPDATE  CLIENTE\r\n" + 
-							"SET cedula = ?\r\n" + 
-							"    , nombre = ?" + 
-							"    , apellido = ?\r\n" + 
-							"    , sexo = UPPER(?)\r\n" + 
-							"    , telefono = ?\r\n" + 
-							"    , direccion = ?\r\n" + 
-							"    , fecha_modificacion = current_date\r\n" + 
-							"    , modificado_por = '5' \r\n" + 
-							"WHERE estado = 1 AND cliente_id = ?";	
-					
-					PreparedStatement preparedStatement = conection.prepareStatement(sql);
-					preparedStatement.setString(1, cliente.get("cedula"));
-					preparedStatement.setString(2, cliente.get("nombre"));
-					preparedStatement.setString(3, cliente.get("apellido"));
-					preparedStatement.setString(4, cliente.get("sexo"));
-					preparedStatement.setString(5, cliente.get("telefono"));
-					preparedStatement.setString(6, cliente.get("direccion"));
-					preparedStatement.setString(7, cliente.get("clienteId"));					
-					preparedStatement.executeUpdate();
-					System.out.println("Cliente actualizado!");					
-					conection.close();
-
-
-					JOptionPane.showMessageDialog(null, "Sus cambios han sido guardados satisfactoriamente.");
-					
-				} catch (SQLException l) {
-					l.printStackTrace();
-				}				
-				
-			}
-			
-			
-		});	// Fin Guardar
-		btnGuardar.setBounds(176, 316, 89, 23);
-		contentPane.add(btnGuardar);
-		
-		// Boton Cancelar			
-		JButton btnCancelar = new JButton("Cancelar");
-		btnCancelar.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {				
-				EditarCliente.this.setVisible(false);
-				Clientev2 clientev2 = new Clientev2();
-				clientev2.setVisible(true);
-			}
-		});
-		btnCancelar.setBounds(284, 316, 89, 23);
-		contentPane.add(btnCancelar);
-		
-		
-		
 		JLabel lblNombres = new JLabel("Nombres (*):");
 		lblNombres.setBounds(67, 33, 76, 14);
 		contentPane.add(lblNombres);
@@ -218,15 +83,83 @@ public class EditarCliente extends JFrame {
 		
 		JLabel lblDireccin = new JLabel("Direcci\u00F3n:");
 		lblDireccin.setBounds(67, 196, 76, 14);
-		contentPane.add(lblDireccin);
+		contentPane.add(lblDireccin);		
 		
+		// Nombres
+		txtNombres = new JTextField();
+		txtNombres.setBounds(176, 30, 120, 20);
+		contentPane.add(txtNombres);
+		txtNombres.setColumns(10);
+		
+		// Apellidos
+		txtApellidos = new JTextField();
+		txtApellidos.setBounds(176, 61, 120, 20);
+		contentPane.add(txtApellidos);
+		txtApellidos.setColumns(10);
+		
+		// Cedula
+		txtCedula = new JTextField();
+		txtCedula.setBounds(176, 92, 86, 20);
+		contentPane.add(txtCedula);
+		txtCedula.setColumns(10);
+		
+		// Sexo
+		bgSexo = new ButtonGroup();
+		rbMasculino = new JRadioButton("Masculino");
+		rbMasculino.setBounds(173, 119, 109, 23);
+		contentPane.add(rbMasculino);
+		rbFemenino = new JRadioButton("Femenino");
+		rbFemenino.setBounds(284, 119, 109, 23);
+		contentPane.add(rbFemenino);
+		bgSexo.add(rbMasculino);
+		bgSexo.add(rbFemenino);
+		
+		// Telefono
+		txtTelefono = new JTextField();
+		txtTelefono.setBounds(176, 149, 86, 20);
+		contentPane.add(txtTelefono);
+		txtTelefono.setColumns(10);
+		
+		// Direccion
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(176, 190, 209, 89);
+		contentPane.add(scrollPane);
+		txtDireccion = new JTextArea();
+		scrollPane.setViewportView(txtDireccion);
+		
+		// Boton Guardar	
+		JButton btnGuardar = new JButton("Guardar");
+		btnGuardar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				if(ActualizarCliente(clienteId)) {
+					EditarCliente.this.setVisible(false);
+					Cliente Cliente = new Cliente();
+					Cliente.setVisible(true);				
+				}		
+				
+			}
+		});	
+		btnGuardar.setBounds(176, 316, 89, 23);
+		contentPane.add(btnGuardar);
+		
+		// Boton Cancelar			
+		JButton btnCancelar = new JButton("Cancelar");
+		btnCancelar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {				
+				EditarCliente.this.setVisible(false);
+				Cliente Cliente = new Cliente();
+				Cliente.setVisible(true);
+			}
+		});
+		btnCancelar.setBounds(284, 316, 89, 23);
+		contentPane.add(btnCancelar);		
 		BuscarCliente(clienteId);
 	}
 	
 	//Verificacion si el clienteId existe en la base de datos
 	public boolean ClienteExiste(int clienteId) {
-		int clienteExiste = 0;
-		
+		int clienteExiste = 0;		
 		try {					
 			Connection conection = ConexionBD.Conectar();
 			String sql =
@@ -236,31 +169,23 @@ public class EditarCliente extends JFrame {
 					"AND estado = 1";	
 			PreparedStatement preparedStatement = conection.prepareStatement(sql);
 			preparedStatement.setInt(1, clienteId);
-			ResultSet resultSet = preparedStatement.executeQuery();
-			
+			ResultSet resultSet = preparedStatement.executeQuery();			
 			while (resultSet.next()) {
 				clienteExiste = resultSet.getInt("existe");
-			}
-			
+			}			
 			if(clienteExiste == 0) {
 				JOptionPane.showMessageDialog(null, "El Cliente Id no existe.", "Editar Cliente", JOptionPane.ERROR_MESSAGE);
 				return false;
-			} 				
-
+			}	
 			conection.close();
-							
 		} catch (SQLException l) {
 			l.printStackTrace();
 		}		
-		
 		return true;
-		
 	}	
 
 	//Verificacion si el clienteId existe en la base de datos
-	public void BuscarCliente(int clienteId) {
-		//int clienteExiste = 0;
-		
+	public void BuscarCliente(int clienteId) {		
 		try {					
 			Connection conection = ConexionBD.Conectar();
 			String sql = 					
@@ -279,11 +204,9 @@ public class EditarCliente extends JFrame {
 					"FROM cliente\r\n" + 
 					"WHERE estado = '1'\r\n" + 
 					"AND cliente_id = ?\r\n" ;
-
 			PreparedStatement preparedStatement = conection.prepareStatement(sql);
 			preparedStatement.setInt(1, clienteId);
-			ResultSet resultSet = preparedStatement.executeQuery();
-			
+			ResultSet resultSet = preparedStatement.executeQuery();	
 			
 			if(resultSet.next() == true) {
 				txtNombres.setText(resultSet.getString("nombre"));
@@ -301,26 +224,86 @@ public class EditarCliente extends JFrame {
 				txtTelefono.setText(resultSet.getString("telefono"));
 				txtDireccion.setText(resultSet.getString("direccion"));
 			} else {
-				JOptionPane.showMessageDialog(null, "No se encontró resultados", "Nuevo Cliente", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(null, Mensaje.NOT_FOUND, "Nuevo Cliente", JOptionPane.WARNING_MESSAGE);
 			}			
-			
-//			while (resultSet.next()) {
-//				clienteExiste = resultSet.getInt("existe");
-//			}
-//			
-//			if(clienteExiste == 0) {
-//				JOptionPane.showMessageDialog(null, "El Cliente Id no existe.", "Editar Cliente", JOptionPane.ERROR_MESSAGE);
-//				return false;
-//			} 				
-
-			conection.close();
-							
+			conection.close();							
 		} catch (SQLException l) {
 			l.printStackTrace();
-		}		
-		
-		//return true;
-		
+		}				
 	}	
+	
+	// Guarda los nuevos cambios
+	public boolean ActualizarCliente(int clienteId) {
+		Map<String, String> cliente = new HashMap<String, String>();
+		//int client_exists = 0;
+
+		/* Se agregan campos que seran validados (obligatorios) los otros (opcionales)
+		 * se los agrega mas abajo, para saltar su validacion en 
+		 * "Validar.ClienteActualizar()", es decir los opcionales
+		 * no estan siendo validados, en esta version.
+		 * */
+		
+		// Campos Obligatorios, que seran validados
+		cliente.put("clienteId", String.valueOf(clienteId));
+		cliente.put("nombre", txtNombres.getText());
+		cliente.put("apellido", txtApellidos.getText());				
+		cliente.put("cedula", txtCedula.getText());
+		cliente.put("sexo", "");
+
+		if(rbMasculino.isSelected()) {
+			cliente.put("sexo", "Masculino");
+		} 
+		if(rbFemenino.isSelected()) {
+			cliente.put("sexo", "Femenino");
+		}				
+		
+		// Validar Datos del Cliente
+		if(!Validar.ClienteActualizar(cliente)) {
+			System.out.println("Los datos ingresados son invalidos");
+			return false;
+		}	
+		
+		// Verificar si el Cliente Id existe en la base de datos
+		if(!ClienteExiste(Integer.parseInt(cliente.get("clienteId")))){
+			return false;
+		}				
+		
+		//Campos Opcionales, que no seran validados
+		cliente.put("telefono", txtTelefono.getText());
+		cliente.put("direccion", txtDireccion.getText());		
+		
+		// Actualizacion de los datos del Cliente
+		try {
+			Connection conection = ConexionBD.Conectar();
+			String sql =
+					"UPDATE  CLIENTE\r\n" + 
+					"SET cedula = ?\r\n" + 
+					"    , nombre = ?" + 
+					"    , apellido = ?\r\n" + 
+					"    , sexo = UPPER(?)\r\n" + 
+					"    , telefono = ?\r\n" + 
+					"    , direccion = ?\r\n" + 
+					"    , fecha_modificacion = current_date\r\n" + 
+					"    , modificado_por = '5' \r\n" + 
+					"WHERE estado = 1 AND cliente_id = ?";	
+			PreparedStatement preparedStatement = conection.prepareStatement(sql);
+			preparedStatement.setString(1, cliente.get("cedula"));
+			preparedStatement.setString(2, cliente.get("nombre"));
+			preparedStatement.setString(3, cliente.get("apellido"));
+			preparedStatement.setString(4, cliente.get("sexo"));
+			preparedStatement.setString(5, cliente.get("telefono"));
+			preparedStatement.setString(6, cliente.get("direccion"));
+			preparedStatement.setString(7, cliente.get("clienteId"));					
+			preparedStatement.executeUpdate();
+			System.out.println("Cliente actualizado!");					
+			conection.close();
+			JOptionPane.showMessageDialog(null, Mensaje.SAVE_OK);
+			return true;
+		} catch (SQLException l) {
+			l.printStackTrace();
+			return false;
+		}				
+	}
+	
 	
 }

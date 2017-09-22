@@ -1,20 +1,17 @@
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.EventQueue;
+/*
+ * Muestra el formulario principal de Cliente
+ * Autor: Juan Mendieta
+ * Fecha de Modificacion: 22/09/2017
+ */
 
+import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-
-import java.awt.ScrollPane;
 import javax.swing.JTable;
-import java.awt.TextArea;
-import javax.swing.JTextArea;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,12 +27,11 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-public class Clientev2 extends JFrame {
+public class Cliente extends JFrame {
 
 	private JPanel contentPane;
 	private JTable table;
 	private JTextField txtBuscar;
-	//private JButton boton;
 	private JButton btn1, btn2;
 	
 
@@ -46,7 +42,7 @@ public class Clientev2 extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Clientev2 frame = new Clientev2();
+					Cliente frame = new Cliente();
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -58,7 +54,7 @@ public class Clientev2 extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public Clientev2() {
+	public Cliente() {
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 718, 539);
@@ -73,7 +69,7 @@ public class Clientev2 extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				NuevoCliente nuevoCliente = new NuevoCliente();
 				nuevoCliente.setVisible(true);
-				Clientev2.this.setVisible(false);
+				Cliente.this.setVisible(false);
 			}
 		});
 		btnNuevo.setBounds(51, 69, 89, 23);
@@ -83,7 +79,6 @@ public class Clientev2 extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(51, 114, 599, 332);
 		contentPane.add(scrollPane);
-		
 		
 		// Tabla
 		table = new JTable() {
@@ -97,45 +92,31 @@ public class Clientev2 extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
 				DefaultTableModel model = (DefaultTableModel) table.getModel();
-//				int filaSeleccionada = table.getSelectedRow();	
 				Object clienteId;
 				clienteId =  model.getValueAt(table.getSelectedRow(), 0);
 				System.out.println(clienteId.toString());
-//				System.out.println(model.getValueAt(selectedRowIndex,0));
-				
-				
-
 		        int column = table.getColumnModel().getColumnIndexAtX(arg0.getX());
 		        int row = arg0.getY()/table.getRowHeight();
 		        
+		        // Botones Editar y Eliminar del JTable
 		        if(row < table.getRowCount() && row >= 0 && column < table.getColumnCount() && column >= 0){
 		            Object value = table.getValueAt(row, column);
 		            if(value instanceof JButton){
 		                ((JButton)value).doClick();
 		               JButton boton = (JButton) value;
-		                //boton =    
-
-		                if(boton.getName().equals("editar")){
+		               if(boton.getName().equals("editar")){
 		                    System.out.println("Click en el boton editar");
 		                    EditarCliente editarCliente = new EditarCliente(Integer.parseInt(clienteId.toString()));
 		                    editarCliente.setVisible(true);
-		                    Clientev2.this.setVisible(false);
-		                    
-
+		                    Cliente.this.setVisible(false);
 		                }
 		                if(boton.getName().equals("eliminar")){
-//		                    JOptionPane.showConfirmDialog(null, "Desea eliminar este registro", "Confirmar", JOptionPane.OK_CANCEL_OPTION);
 		                    System.out.println("Click en el boton eliminar");
-		                    Clientev2.this.Eliminar(Integer.parseInt(clienteId.toString()));
-//		                    Mostrar();
+		                    Cliente.this.Eliminar(Integer.parseInt(clienteId.toString()));
 		                    Buscar();
 		                }
 		            }
-
 		        }				
-				
-				
-				
 			}
 		});
 		scrollPane.setViewportView(table);
@@ -157,36 +138,22 @@ public class Clientev2 extends JFrame {
 		btn2 = new JButton("eliminar");
 		btn2.setName("eliminar");	
 		
-		
 		// Mostrar Datos
 		Mostrar();
-
 		
 	}
 	
-
-	
-	
 	private void Mostrar() {
-		DefaultTableModel modelo = new DefaultTableModel()
 		
-		/*{
-			public boolean isCellEditabe(int row, int column)
-			{
-				return false;
-			}
-		}*/
-		;
+		ClienteModel cliente = new ClienteModel();
+		Map<String, String> result;
+		result = cliente.getJTable();
+		System.out.println(result);
+		//return;
+		
+		DefaultTableModel modelo = new DefaultTableModel();
 		modelo.setColumnIdentifiers(new Object[] {"Id", "Nombres", "Apellidos", "Teléfono","Dirección", "Editar", "Eliminar"});
-		
 		table.setDefaultRenderer(Object.class, new Render());
-		
-		// Botones
-//		JButton btn1 = new JButton("editar");
-//		btn1.setName("editar");
-//		JButton btn2 = new JButton("eliminar");
-//		btn2.setName("eliminar");		
-		
 		try {					
 			Connection conection = ConexionBD.Conectar();
 			String sql =
@@ -202,45 +169,23 @@ public class Clientev2 extends JFrame {
 					"    ORDER BY cliente_id ASC \r\n" + 
 					") "
 					+ "WHERE estado = 1"; 
-					//"WHERE cliente_id = ?\r\n" + 
-					//"AND estado = 1";	
 			PreparedStatement preparedStatement = conection.prepareStatement(sql);
-			
 			ResultSet resultSet = preparedStatement.executeQuery();
-			
 			while (resultSet.next()) {
-				//clienteExiste = resultSet.getInt("existe");
 				modelo.addRow(new Object[] {resultSet.getString("cliente_id"), resultSet.getString("nombre"), resultSet.getString("apellido"), resultSet.getString("telefono"), resultSet.getString("direccion"), btn1, btn2});
 			}
-			//modelo.isCellEditable(row, column)
 			table.setModel(modelo);
 			table.setRowHeight(30);
-			
-
 			conection.close();
-			
-	
-							
 		} catch (SQLException l) {
 			l.printStackTrace();
 		}		
 	}	// Fin Mostrar()
 	
-	
-	
-	
 	private void Buscar() {
 		DefaultTableModel modelo = new DefaultTableModel();
 		modelo.setColumnIdentifiers(new Object[] {"Id", "Nombres", "Apellidos", "Teléfono","Dirección", "Editar", "Eliminar"});
-		
 		table.setDefaultRenderer(Object.class, new Render());
-		
-		// Botones
-//		JButton btn1 = new JButton("Editar");
-//		btn1.setName("editar");
-//		JButton btn2 = new JButton("Eliminar");
-//		btn1.setName("eliminar");
-		
 		
 		try {					
 			Connection conection = ConexionBD.Conectar();
@@ -266,35 +211,23 @@ public class Clientev2 extends JFrame {
 					"    OR telefono LIKE '%" +  txtBuscar.getText() + "%'\r\n" + 
 					"    OR UPPER(direccion) LIKE UPPER('%" +  txtBuscar.getText() + "%')\r\n" +
 					")";
-
 					
 			PreparedStatement preparedStatement = conection.prepareStatement(sql);
-		
 			ResultSet resultSet = preparedStatement.executeQuery();
-			
 			while (resultSet.next()) {
 				modelo.addRow(new Object[] {resultSet.getString("cliente_id"), resultSet.getString("nombre"), resultSet.getString("apellido"), resultSet.getString("telefono"), resultSet.getString("direccion"), btn1, btn2});
 			}
 			table.setModel(modelo);
-
 			conection.close();
-			
-	
-							
 		} catch (SQLException l) {
 			l.printStackTrace();
 		}		
-		
-		
-		
 		
 	}	// Fin Buscar()	
 
 	private void Eliminar(int clienteId) {
 
 		Map<String, String> cliente = new HashMap<String, String>();
-		int client_exists = 0;
-		
 		cliente.put("clienteId", String.valueOf(clienteId));
 		
 		// Verificacion si el Cliente Id es un valor numerico
@@ -316,8 +249,6 @@ public class Clientev2 extends JFrame {
 		// Eliminacion Lógica de la base de datos 
 		try {
 			Connection conection = ConexionBD.Conectar();
-			//String clienteId	= txtClienteId.getText();
-			
 			String sql =
 					"UPDATE  CLIENTE\r\n" + 
 					"SET estado = 0\r\n" + 
@@ -326,24 +257,18 @@ public class Clientev2 extends JFrame {
 			
 			PreparedStatement preparedStatement = conection.prepareStatement(sql);
 			preparedStatement.setString(1, String.valueOf(clienteId) );
-			
 			preparedStatement.executeUpdate();
 			conection.close();
-			//Limpiar();
 			System.out.println("Cliente eliminado!");
-			JOptionPane.showMessageDialog(null, "El cliente se ha eliminado satisfactoriamente.");
-			
+			JOptionPane.showMessageDialog(null, Mensaje.REMOVE_OK);
 		} catch (SQLException l) {
 			l.printStackTrace();
 		}								
-		
-	}
-		
+	}	// Fin Elimninar()
 		
 	//Verificacion si el clienteId existe en la base de datos
 	public boolean ClienteExiste(int clienteId) {
 		int clienteExiste = 0;
-		
 		try {					
 			Connection conection = ConexionBD.Conectar();
 			String sql =
@@ -354,29 +279,19 @@ public class Clientev2 extends JFrame {
 			PreparedStatement preparedStatement = conection.prepareStatement(sql);
 			preparedStatement.setInt(1, clienteId);
 			ResultSet resultSet = preparedStatement.executeQuery();
-			
 			while (resultSet.next()) {
 				clienteExiste = resultSet.getInt("existe");
 			}
-			
 			if(clienteExiste == 0) {
-				JOptionPane.showMessageDialog(null, "El Cliente Id no existe.", "Editar Cliente", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, Mensaje.INVALID_ID, "Editar Cliente", JOptionPane.ERROR_MESSAGE);
 				return false;
 			} 				
-
 			conection.close();
 							
 		} catch (SQLException l) {
 			l.printStackTrace();
 		}		
-		
 		return true;
-		
-	}	
-		
-		
-		
-		
+	}	// Fin ClienteExiste()
 	
-	
-}	// Fin Clientev2 
+}	// Fin Cliente 
