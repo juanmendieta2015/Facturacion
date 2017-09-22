@@ -3,6 +3,7 @@
  * Autor: Juan mendieta
  * Fecha de Modificacion: 21/09/2017
  */
+
 import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -35,7 +36,6 @@ public class NuevoCliente extends JFrame implements ChangeListener{
 	private JTextArea txtDireccion;
 	private ButtonGroup bgSexo;
 	private JRadioButton rbMasculino, rbFemenino;
-	
 
 	/**
 	 * Launch the application.
@@ -58,6 +58,7 @@ public class NuevoCliente extends JFrame implements ChangeListener{
 	 */
 	// Constructor
 	public NuevoCliente() {
+			
 		setTitle("Nuevo Cliente");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 417);
@@ -160,8 +161,7 @@ public class NuevoCliente extends JFrame implements ChangeListener{
 	}
 	
 	
-	public void Limpiar() {
-		
+	public void Limpiar() {		
 		txtNombres.setText("");		 
 		txtApellidos.setText("");
 		txtCedula.setText("");
@@ -224,10 +224,10 @@ public class NuevoCliente extends JFrame implements ChangeListener{
 			preparedStatement.setString(5, cliente.get("telefono"));
 			preparedStatement.setString(6, cliente.get("direccion"));
 			preparedStatement.executeUpdate();
-			System.out.println("Cliente creado!");
+			System.out.println("Cliente creado.");
 			conection.close();
 			Limpiar();	
-			JOptionPane.showMessageDialog(null, "Cliente creado satisfactoriamente!");
+			JOptionPane.showMessageDialog(null, Mensaje.SAVE_OK);
 			
 		} catch (SQLException l) {
 			l.printStackTrace();
