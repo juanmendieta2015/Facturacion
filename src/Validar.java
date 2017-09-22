@@ -22,31 +22,31 @@ public class Validar {
 	public static boolean ClienteCrear(Map args) {
 	
 		if (existenCamposVacios(args) == true) {
-			JOptionPane.showMessageDialog(null, "Existen campos vacios", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, Mensaje.EMPTY_FIELD, "Error", JOptionPane.ERROR_MESSAGE);
 			System.out.println("campos vacios");
 			return false;
 		} 
 		
 		if (soloLetras(args.get("nombre").toString()) == false) {
-			JOptionPane.showMessageDialog(null, "El nombre ingresado no es válido", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, Mensaje.INVALID_FIRSTNAME, "Error", JOptionPane.ERROR_MESSAGE);
 			System.out.println("nombre invalido");
 			return false;
 		} 	
 		
 		if (soloLetras(args.get("apellido").toString()) == false) {
-			JOptionPane.showMessageDialog(null, "El apellido ingresado no es válido", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, Mensaje.INVALID_LASTNAME, "Error", JOptionPane.ERROR_MESSAGE);
 			System.out.println("apellido invalido");
 			return false;
 		} 	
 		
 		if (soloNumeros(args.get("cedula").toString()) == false) {
-			JOptionPane.showMessageDialog(null, "La cedula ingresada no es válida", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, Mensaje.INVALID_CEDULA, "Error", JOptionPane.ERROR_MESSAGE);
 			System.out.println("cedula invalida");
 			return false;
 		}	
 		
 		if (sexo(args.get("sexo").toString()) == false) {
-			JOptionPane.showMessageDialog(null, "El sexo ingresado no es válido", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, Mensaje.INVALID_SEX, "Error", JOptionPane.ERROR_MESSAGE);
 			System.out.println("sexo invalido");
 			return false;
 		} 			
@@ -55,7 +55,7 @@ public class Validar {
 	
 	public static boolean ClienteBuscar(String clienteId) {
 		if (soloNumeros(clienteId) == false) {
-			JOptionPane.showMessageDialog(null, "El ciente Id no es válido", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, Mensaje.INVALID_ID, "Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}	
 		return true;
@@ -64,32 +64,32 @@ public class Validar {
 	public static boolean ClienteActualizar(Map args) {
 		
 		if (existenCamposVacios(args) == true) {
-			JOptionPane.showMessageDialog(null, "Existen campos vacios", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, Mensaje.EMPTY_FIELD, "Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		} 
 
 		if (soloNumeros(args.get("clienteId").toString()) == false) {
-			JOptionPane.showMessageDialog(null, "El ciente Id no es válido", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, Mensaje.INVALID_ID, "Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		} 	
 		
 		if (soloLetras(args.get("nombre").toString()) == false) {
-			JOptionPane.showMessageDialog(null, "El nombre ingresado no es válido", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, Mensaje.INVALID_FIRSTNAME, "Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		} 	
 		
 		if (soloLetras(args.get("apellido").toString()) == false) {
-			JOptionPane.showMessageDialog(null, "El apellido ingresado no es válido", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, Mensaje.INVALID_LASTNAME, "Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		} 	
 		
 		if (soloNumeros(args.get("cedula").toString()) == false) {
-			JOptionPane.showMessageDialog(null, "La cedula ingresada no es válida", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, Mensaje.INVALID_CEDULA, "Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}	
 		
 		if (sexo(args.get("sexo").toString()) == false) {
-			JOptionPane.showMessageDialog(null, "El sexo ingresado no es válido", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, Mensaje.INVALID_SEX, "Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		} 	
 		
@@ -101,7 +101,7 @@ public class Validar {
 	public static boolean ClienteEliminar(Map args) {
 
 		if (soloNumeros(args.get("clienteId").toString()) == false) {
-			JOptionPane.showMessageDialog(null, "El Cliente Id no es válido", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, Mensaje.INVALID_ID, "Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		} 	
 		
